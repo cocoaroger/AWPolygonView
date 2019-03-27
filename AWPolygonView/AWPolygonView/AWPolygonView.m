@@ -19,14 +19,16 @@
     CGFloat _centerY;
     BOOL    _toDraw;
 }
-@property (nonatomic, assign) NSInteger                                     sideNum;
+@property (nonatomic, assign) NSInteger                                     sideNum; // 边数
 @property (nonatomic, strong) NSArray<NSArray<NSValue *> *>                 *cornerPointArrs;
 @property (nonatomic, strong) NSArray<NSValue *>                            *valuePoints;
 
+@property (nonatomic, strong) CAShapeLayer                                  *outEdgeLineLayer; // 外圈边
+@property (nonatomic, strong) CAShapeLayer                                  *lineLayer;
 @property (nonatomic, strong) CAShapeLayer                                  *valueLayer;
-@property (nonatomic, strong) CAShapeLayer                                  *shapeLayer;
 
-@property (nonatomic, strong) UIBezierPath                                  *bezierPath;
+@property (nonatomic, strong) UIBezierPath                                  *outEdgeLinePath;
+@property (nonatomic, strong) UIBezierPath                                  *linePath;
 @property (nonatomic, strong) UIBezierPath                                  *valuePath;
 
 
@@ -52,20 +54,37 @@
 #pragma mark - Overwrite
 - (void)didMoveToSuperview {
     [super didMoveToSuperview];
-    [self.layer addSublayer:self.shapeLayer];
+    [self.layer addSublayer:self.outEdgeLineLayer];
+    [self.layer addSublayer:self.lineLayer];
     [self.layer addSublayer:self.valueLayer];
+    
     [self drawLineFromCenter];
     [self drawValueSide];
     [self drawSide];
-    self.shapeLayer.path = self.bezierPath.CGPath;
-    [self addStrokeEndAnimationToLayer:self.shapeLayer];
-
+    
+    self.linePath.lineWidth = self.lineWidth;
+    self.outEdgeLinePath.lineWidth = self.lineWidth;
+    
+    self.outEdgeLineLayer.fillColor = [UIColor whiteColor].CGColor;
+    self.outEdgeLineLayer.strokeColor = self.lineColor.CGColor;
+    self.outEdgeLineLayer.path = self.outEdgeLinePath.CGPath;
+    
+    self.lineLayer.fillColor = [UIColor whiteColor].CGColor;
+    self.lineLayer.strokeColor = [self.lineColor colorWithAlphaComponent:0.6].CGColor;
+    self.lineLayer.path = self.linePath.CGPath;
+    
+    self.valueLayer.path = self.valuePath.CGPath;
+    self.valueLayer.fillColor = [self.valueLineColor colorWithAlphaComponent:0.1].CGColor;
+    self.valueLayer.strokeColor = self.valueLineColor.CGColor;
+    
+//    [self addStrokeEndAnimationToLayer:self.lineLayer]; // 添加动画
 }
 
 
 - (void)layoutSubviews {
     [super layoutSubviews];
-    self.shapeLayer.frame = self.bounds;
+    self.outEdgeLineLayer.frame = self.bounds;
+    self.lineLayer.frame = self.bounds;
     self.valueLayer.frame = self.bounds;
 }
 
@@ -74,8 +93,12 @@
     self.sideNum = self.values.count;
     _centerX = self.bounds.size.width/2;
     _centerY = self.bounds.size.height/2;
+    
     if (self.radius == 0) {
         self.radius = self.bounds.size.width/2;
+    }
+    if (self.lineWidth == 0) {
+        self.lineWidth = 1;
     }
     if (!self.lineColor) {
         self.lineColor = [UIColor yellowColor];
@@ -93,10 +116,7 @@
     }
 }
 
-
 - (void)makePoints {
-    
-    
     NSMutableArray *tempValuePoints = [NSMutableArray new];
     NSMutableArray *tempCornerPointArrs = [NSMutableArray new];
     
@@ -125,107 +145,82 @@
 
     self.cornerPointArrs = [tempCornerPointArrs copy];
     self.valuePoints = [tempValuePoints copy];
-    
 }
-
-
-- (NSArray *)getPointsWithRadius:(CGFloat )radius {
-    
-
-    NSMutableArray *inCornerPoints = [NSMutableArray new];
-
-    for (int i = 0; i < self.sideNum; i++) {
-        
-        CGPoint cornerPoint = CGPointMake(_centerX - ANGLE_COS(90.0 - 360.0 /self.sideNum * i) * self.radius,
-                                          _centerY - ANGLE_SIN(90.0 - 360.0 /self.sideNum * i) * self.radius);
-        
-        [inCornerPoints addObject:[NSValue valueWithCGPoint:cornerPoint]];
-    }
-    return [inCornerPoints copy];
-}
-
 
 - (void)setValues:(NSArray *)values {
     _values = values;
     [self prepaeData];
     [self makePoints];
-
 }
+
 #pragma mark - draw
-- (void)drawSide {
-    for (NSArray *points in self.cornerPointArrs) {
-        [self drawLineWithPoints:points color:self.lineColor];
-    }
-}
-
-
-- (void)drawLineWithPoints:(NSArray<NSValue *> *)points color:(UIColor *)color{
-    if (points.count == 0) {
-        return;
-    }
-    CGPoint firstPoint = [points[0] CGPointValue];
-    
-    [_bezierPath moveToPoint:firstPoint];
-    for (int i = 1; i < points.count; i++) {
-        
-        CGPoint point = [points[i] CGPointValue];
-        [_bezierPath addLineToPoint:point];
-        _bezierPath.lineWidth = 1;
-    }
-    [_bezierPath addLineToPoint:firstPoint];
-
-}
-
-
+// 中心向最外边划线
 - (void)drawLineFromCenter {
-    
     NSArray *poins = [self.cornerPointArrs lastObject];
-    
     for (int i = 0; i < poins.count; i++) {
-        [self.bezierPath moveToPoint:CGPointMake(_centerX, _centerY)];
+        [self.linePath moveToPoint:CGPointMake(_centerX, _centerY)];
         CGPoint point = [poins[i] CGPointValue];
-        [self.bezierPath addLineToPoint:point];
-        [self.bezierPath setLineWidth:1];
+        [self.linePath addLineToPoint:point];
     }
-    self.shapeLayer.strokeColor = self.lineColor.CGColor;
-
-
 }
 
-
-- (void)drawValueSide{
-    
+// 值的划线
+- (void)drawValueSide {
     if (self.valuePoints.count == 0) {
         return;
     }
     CGPoint firstPoint = [[self.valuePoints firstObject] CGPointValue];
-    
     [self.valuePath moveToPoint:firstPoint];
     for (int i = 1; i < self.valuePoints.count; i++) {
-        
         CGPoint point = [self.valuePoints[i] CGPointValue];
         [self.valuePath addLineToPoint:point];
-        self.valuePath.lineWidth = 1;
     }
     [self.valuePath addLineToPoint:firstPoint];
-    self.valueLayer.fillColor = self.valueLineColor.CGColor;
-    self.valueLayer.strokeColor = self.valueLineColor.CGColor;
-    self.valueLayer.path = self.valuePath.CGPath;
-    
 }
+
+// 每一层的边
+- (void)drawSide {
+    for (NSArray *points in self.cornerPointArrs) {
+        if (points == self.cornerPointArrs.lastObject) {
+            [self drawLineWithPoints:points path:self.outEdgeLinePath];
+        } else {
+            [self drawLineWithPoints:points path:self.linePath];
+        }
+    }
+}
+
+- (void)drawLineWithPoints:(NSArray<NSValue *> *)points path:(UIBezierPath *)path {
+    if (points.count == 0) {
+        return;
+    }
+    CGPoint firstPoint = [points.firstObject CGPointValue];
+    [path moveToPoint:firstPoint];
+    for (int i = 1; i < points.count; i++) {
+        CGPoint point = [points[i] CGPointValue];
+        [path addLineToPoint:point];
+    }
+    [path addLineToPoint:firstPoint];
+}
+
 #pragma mark - Action 
 - (void)show {
-    
     _toDraw = YES;
     [self setNeedsDisplay];
-
 }
+
 #pragma makr - Getter MEthod 
-- (CAShapeLayer *)shapeLayer {
-    if (!_shapeLayer) {
-        _shapeLayer = [CAShapeLayer layer];
+- (CAShapeLayer *)lineLayer {
+    if (!_lineLayer) {
+        _lineLayer = [CAShapeLayer layer];
     }
-    return _shapeLayer;
+    return _lineLayer;
+}
+
+- (CAShapeLayer *)outEdgeLineLayer {
+    if (!_outEdgeLineLayer) {
+        _outEdgeLineLayer = [CAShapeLayer layer];
+    }
+    return _outEdgeLineLayer;
 }
 
 - (CAShapeLayer *)valueLayer {
@@ -235,17 +230,25 @@
     return _valueLayer;
 }
 
-- (UIBezierPath *)bezierPath {
-    if (!_bezierPath) {
-        _bezierPath = [UIBezierPath bezierPath];
+- (UIBezierPath *)outEdgeLinePath {
+    if (!_outEdgeLinePath) {
+        _outEdgeLinePath = [UIBezierPath bezierPath];
     }
-    return _bezierPath;
+    return _outEdgeLinePath;
 }
+
+- (UIBezierPath *)linePath {
+    if (!_linePath) {
+        _linePath = [UIBezierPath bezierPath];
+    }
+    return _linePath;
+}
+
 - (UIBezierPath *)valuePath {
     if (!_valuePath) {
         _valuePath = [UIBezierPath bezierPath];
     }
-    return _bezierPath;
+    return _valuePath;
 }
 
 #pragma mark - Animation

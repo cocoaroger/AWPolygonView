@@ -27,6 +27,7 @@
     btn.backgroundColor = [UIColor yellowColor];
     [self.view addSubview:btn];
     
+    [self starAnimation];
 }
 
 - (void)starAnimation {
