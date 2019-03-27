@@ -10,8 +10,6 @@
 		2E4F83C51ED2CC7100F11020 /* ShowViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2E4F83C41ED2CC7100F11020 /* ShowViewController.m */; };
 		5EBF789E1E80D38200682E58 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 5EBF789D1E80D38200682E58 /* main.m */; };
 		5EBF78A11E80D38200682E58 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 5EBF78A01E80D38200682E58 /* AppDelegate.m */; };
-		5EBF78A41E80D38200682E58 /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 5EBF78A31E80D38200682E58 /* ViewController.m */; };
-		5EBF78A71E80D38200682E58 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 5EBF78A51E80D38200682E58 /* Main.storyboard */; };
 		5EBF78A91E80D38200682E58 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 5EBF78A81E80D38200682E58 /* Assets.xcassets */; };
 		5EBF78AC1E80D38200682E58 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 5EBF78AA1E80D38200682E58 /* LaunchScreen.storyboard */; };
 		5EBF78B71E80D38200682E58 /* AWPolygonViewTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 5EBF78B61E80D38200682E58 /* AWPolygonViewTests.m */; };
@@ -43,9 +41,6 @@
 		5EBF789D1E80D38200682E58 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		5EBF789F1E80D38200682E58 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		5EBF78A01E80D38200682E58 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
-		5EBF78A21E80D38200682E58 /* ViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ViewController.h; sourceTree = "<group>"; };
-		5EBF78A31E80D38200682E58 /* ViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ViewController.m; sourceTree = "<group>"; };
-		5EBF78A61E80D38200682E58 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		5EBF78A81E80D38200682E58 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		5EBF78AB1E80D38200682E58 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		5EBF78AD1E80D38200682E58 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -109,13 +104,10 @@
 			children = (
 				5EBF789F1E80D38200682E58 /* AppDelegate.h */,
 				5EBF78A01E80D38200682E58 /* AppDelegate.m */,
-				5EBF78A21E80D38200682E58 /* ViewController.h */,
-				5EBF78A31E80D38200682E58 /* ViewController.m */,
 				2E4F83C31ED2CC7100F11020 /* ShowViewController.h */,
 				2E4F83C41ED2CC7100F11020 /* ShowViewController.m */,
 				5EBF78CF1E80D39C00682E58 /* AWPolygonView.h */,
 				5EBF78D01E80D39C00682E58 /* AWPolygonView.m */,
-				5EBF78A51E80D38200682E58 /* Main.storyboard */,
 				5EBF78A81E80D38200682E58 /* Assets.xcassets */,
 				5EBF78AA1E80D38200682E58 /* LaunchScreen.storyboard */,
 				5EBF78AD1E80D38200682E58 /* Info.plist */,
@@ -261,7 +253,6 @@
 			files = (
 				5EBF78AC1E80D38200682E58 /* LaunchScreen.storyboard in Resources */,
 				5EBF78A91E80D38200682E58 /* Assets.xcassets in Resources */,
-				5EBF78A71E80D38200682E58 /* Main.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -286,7 +277,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				5EBF78A41E80D38200682E58 /* ViewController.m in Sources */,
 				2E4F83C51ED2CC7100F11020 /* ShowViewController.m in Sources */,
 				5EBF78D11E80D39C00682E58 /* AWPolygonView.m in Sources */,
 				5EBF78A11E80D38200682E58 /* AppDelegate.m in Sources */,
@@ -326,14 +316,6 @@
 /* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
-		5EBF78A51E80D38200682E58 /* Main.storyboard */ = {
-			isa = PBXVariantGroup;
-			children = (
-				5EBF78A61E80D38200682E58 /* Base */,
-			);
-			name = Main.storyboard;
-			sourceTree = "<group>";
-		};
 		5EBF78AA1E80D38200682E58 /* LaunchScreen.storyboard */ = {
 			isa = PBXVariantGroup;
 			children = (
